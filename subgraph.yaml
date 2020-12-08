@@ -1,4 +1,6 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
+description: Orion Protocol Token
+repository: https://github.com/redallica/Subgraph_Orion_Protocol
 schema:
   file: ./schema.graphql
 dataSources:
@@ -10,13 +12,13 @@ dataSources:
       abi: OrionToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.2
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - MinterAdded
-        - MinterRemoved
-        - Transfer
-        - Approval
+        - TokenHolder
+        - Minter
+        - TransferCounter
+        - TokenApprove
       abis:
         - name: OrionToken
           file: ./abis/OrionToken.json

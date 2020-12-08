@@ -6,64 +6,91 @@ import {
   Transfer,
   Approval
 } from "../generated/OrionToken/OrionToken"
-import { ExampleEntity } from "../generated/schema"
+import {TokenHolder, Minter, TokenHolderCounter, MinterCounter, TransferCounter, TokenApprove } from "../generated/schema"
 
 export function handleMinterAdded(event: MinterAdded): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
-
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  let minter = Minter.load(event.address.toHex())
+  if (minter == null) {
+    // Minter added
+    minter = new Minter(event.address.toHex())
+    minter.address = event.address.toHex()
+    minter.count = BigInt.fromI32(1)
   }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.account = event.params.account
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.name(...)
-  // - contract.approve(...)
-  // - contract.totalSupply(...)
-  // - contract.transferFrom(...)
-  // - contract.decimals(...)
-  // - contract.cap(...)
-  // - contract.increaseAllowance(...)
-  // - contract.mint(...)
-  // - contract.balanceOf(...)
-  // - contract.symbol(...)
-  // - contract.decreaseAllowance(...)
-  // - contract.transfer(...)
-  // - contract.isMinter(...)
-  // - contract.allowance(...)
+  minter.count = minter.count.plus(BigInt.fromI32(1))
+  minter.save()
 }
 
-export function handleMinterRemoved(event: MinterRemoved): void {}
+export function handleMinterRemoved(event: MinterRemoved): void {
+  let minter = Minter.load(event.address.toHex())
+  if (minter == null) {
+    // Minter removed
+    minter = new Minter(event.address.toHex())
+    minter.address = event.address.toHex()
+    minter.count = BigInt.fromI32(1)
+  }  
+  minter.count = minter.count.plus(BigInt.fromI32(1))
+  minter.save()
+}
 
-export function handleTransfer(event: Transfer): void {}
+export function handleTransfer(event: Transfer): void {
+  let tokenholderFrom = TokenHolder.load(event.params.from.toHex())
+  if (tokenholderFrom == null) {
+    tokenholderFrom = newTokenHolder(event.params.from.toHex(), event.params.from.toHex());
+    tokenholderFrom.count = BigInt.fromI32(1)
+  }
+  tokenholderFrom.balance = tokenholderFrom.balance.minus(event.params.value)
+  tokenholderFrom.transactionCount = tokenholderFrom.transactionCount.plus(BigInt.fromI32(1))
+  tokenholderFrom.count = tokenholderFrom.count.plus(BigInt.fromI32(1))
+  tokenholderFrom.save()
 
-export function handleApproval(event: Approval): void {}
+  let tokenholderTo = TokenHolder.load(event.params.to.toHex())
+  if (tokenholderTo == null) {
+    tokenholderTo = newTokenHolder(event.params.to.toHex(), event.params.to.toHex());
+    tokenholderTo.count = BigInt.fromI32(1)
+  }
+    // TokenHolderCounter
+      //let tokenholderCounter = TokenHolderCounter.load('singleton')
+      //if (tokenholderCounter == null) {
+        //tokenholderCounter = new TokenHolderCounter('singleton')
+        //tokenholderCounter.count = BigInt.fromI32(1)
+       //else {
+        //tokenholderCounter.count = tokenholderCounter.count.plus(BigInt.fromI32(1))
+      //}
+      //tokenholderCounter.save()
+      //tokenholderCounter.save()
+  tokenholderTo.balance = tokenholderTo.balance.plus(event.params.value)
+  tokenholderTo.transactionCount = tokenholderTo.transactionCount.plus(BigInt.fromI32(1))
+  tokenholderTo.count = tokenholderTo.count.plus(BigInt.fromI32(1))
+  tokenholderTo.save()
+
+  // Transfer counter total and historical
+  let transferCounter = TransferCounter.load('singleton')
+  if (transferCounter == null) {
+    transferCounter = new TransferCounter('singleton')
+    transferCounter.count = BigInt.fromI32(0)
+    transferCounter.totalTransferred = BigInt.fromI32(0)
+  }
+  transferCounter.count = transferCounter.count.plus(BigInt.fromI32(1))
+  transferCounter.totalTransferred = transferCounter.totalTransferred.plus(event.params.value)
+  transferCounter.save()  
+}
+
+export function handleApproval(event: Approval): void {
+  let tokenapprove = TokenApprove.load(event.transaction.from.toHex())
+if (tokenapprove == null) {
+tokenapprove = new TokenApprove(event.transaction.from.toHex())
+tokenapprove.count = BigInt.fromI32(0)
+}
+tokenapprove.count = event.transaction.value
+tokenapprove.owner = event.params.owner
+tokenapprove.spender = event.params.spender
+tokenapprove.save()
+}
+
+function newTokenHolder(id: string, address: string): TokenHolder {
+  let tokenholder = new TokenHolder(id);
+  tokenholder.address = address
+  tokenholder.balance = BigInt.fromI32(0)
+  tokenholder.transactionCount = BigInt.fromI32(0)
+  return tokenholder
+}

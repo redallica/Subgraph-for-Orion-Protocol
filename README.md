@@ -1,7 +1,7 @@
 # Subgraph-for-Orion-Protocol
 This is a subgraph for the [Orion Protocol](https://github.com/orionprotocol) token (**$ORN**)
 
-This requires the Orion Token ($ORN) contract (address: *0x0258F474786DdFd37ABCE6df6BBb1Dd5dfC4434a*) to be ingested by the subgraph, with the events that were sourced to be stored in the subgraph database:
+This requires the Orion Token (**$ORN**) contract (address: *0x0258F474786DdFd37ABCE6df6BBb1Dd5dfC4434a*) to be ingested by the subgraph, with the events that were sourced to be stored in the subgraph database:
 
 •	MinterRole.sol
 
@@ -21,7 +21,7 @@ This contract is running on Ethereum Mainnet. In order to do so the *subgraph.ya
 
 ## Brief Description of The Graph Node Setup
 
-A Graph Node can run multiple subgraphs, and in this case it can have a subgraph for Ropsten, Mainnet and Kovan. The subgraph ingests event data by calling to Infura through http. It can also connect to any geth node or parity node that accepts RPC calls. Fast synced geth nodes work. To use parity, the --no-warp flag must be used. Setting up a local Ethereum node is more reliable and faster, but Infura is the easiest way to get started.
+A Graph Node can run multiple subgraphs, and in this case it can have a subgraph for Ropsten, Mainnet and Kovan. The subgraph ingests event data by calling to Infura through http. It can also connect to any geth node or parity node that accepts RPC calls. Fast synced geth nodes work. To use parity, the *--no-warp* flag must be used. Setting up a local Ethereum node is more reliable and faster, but Infura is the easiest way to get started.
 
 This subgraph has three types of files which tell the Graph Node to ingest events from specific contracts. They are:
 
@@ -69,7 +69,9 @@ This subgraph is ingesting **4 events** as described above:
 
 10.	Now deploy the Orion Protocol subgraph to The Graph Node with `yarn deploy`. You should see a lot of blocks being skipped in the graph-node terminal, and then it will start ingesting events from the moment the contracts were uploaded to the network.
 
+More details are provided in this [Medium article](https://medium.com/swlh/how-to-build-a-subgraph-on-windows-for-a-non-tech-curator-6641030376bd)
+
 Now that you have subgraph is running you may open a [Graphiql](https://github.com/graphql/graphiql) browser at *127.0.0.1:8000* and get started with querying.
 
 ## Viewing the Subgraph on the Graph Hosted Service
-This subgraph is on The Graph Explorer at the following address: [https://thegraph.com/explorer/subgraph/redallica/orion-protocol](https://thegraph.com/explorer/subgraph/redallica/orion-protocol). 
+This subgraph is on [The Graph Explorer](https://thegraph.com/explorer/) at the following address: [https://thegraph.com/explorer/subgraph/redallica/orion-protocol](https://thegraph.com/explorer/subgraph/redallica/orion-protocol). 

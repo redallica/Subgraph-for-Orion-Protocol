@@ -17,7 +17,7 @@ This requires the Orion Token ($ORN) contract (address: *0x0258F474786DdFd37ABCE
      
 All of the other contracts don't emit events that are relevant for this subgraph.
 
-This contract is running on Ethereum Mainnet. In order to do so the subgraph.yaml file will need to have the contract address (see above), the entities (defined in the GraphQL schema) and the event handlers.
+This contract is running on Ethereum Mainnet. In order to do so the *subgraph.yaml* file will need to have the contract address (see above), the entities (defined in the GraphQL schema) and the event handlers.
 
 ## Brief Description of The Graph Node Setup
 

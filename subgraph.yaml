@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: Orion Protocol Token
-repository: https://github.com/redallica/Subgraph_Orion_Protocol
+repository: https://github.com/redallica/Subgraph-for-Orion-Protocol
 schema:
   file: ./schema.graphql
 dataSources:
